@@ -1,12 +1,42 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Geison HTML Document</title>
-</head>
-<body>
-    <h1>sejabem vindo no meu HTML document</h1>
-    <p>Geison Brito.</p>
-</body>
-</html>
+{% extends "./base.html" %}
+{% block title %}
+Lista de Tarefas
+{% endblock %}
+
+{% block content%}
+
+    <h1>Listas de tarefas</h1>
+
+    <form action="{% url 'store' %}" method="post">
+        {% csrf_token %}
+        {{form.as_p}}
+        <input type="text" name="text" placeholder="Novo Item" resquired>
+        <button type="submit" class="btn btn-danger">Adicionar</button>
+    </form>
+    {% if form.errors %}
+        <div class="errors">
+            <ul>
+                {% for field in form %}
+                    {% for error in field.errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+    {% if todos %}
+    <ul>
+        {% for todo in todos %}
+        <li>
+            {{ todo.name }}
+            <a href="{% url 'show' todo.id %}"><button type="button">Abrir</button></a>
+            <form action="{% url 'destroy' todo.id %}" style="display: inline;" method='post'>
+                {% csrf_token %}
+                <button type="submit">Excluir</button>
+            </form>
+        </li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+
+{% endblock%}
