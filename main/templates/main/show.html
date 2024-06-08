@@ -1,2 +1,33 @@
-<!DOCTYPE html>
-<html lang="pt">
+{% extends "./base.html" %}
+{% block title %} Detalhes da Tarefa {% endblock %}
+
+{% block content%}
+        <h1>{{name}}</h1>
+        <a href="{% url 'index' %}"><button type="submit">Voltar</button></a>
+
+        <form action="{% url 'store-item' todo_id %}" method="post">
+            {% csrf_token %}
+            <input type="text" name="text" placeholder="Novo item" required />
+            <button type="submit">Adicionar</button>
+        </form>
+
+        <ul>
+            {% for item in items %}
+            <li>
+                {{item.text}}
+                <form action="{% url 'put-item' item.id %}" method="post" style="display: inline;">
+                    {% csrf_token %}
+                    {% if item.complete %}
+                        <button type="submit">Concluído</button>
+                    {% else %}
+                        <button type="submit">Pendente</button>
+                    {% endif %}
+                </form>
+                <form action="{% url 'destroy-item' item.todo.id item.id %}" method="post" style="display: inline;">
+                    {% csrf_token %}
+                    <button type="submit">Excluir</button>
+                </form>
+            </li>
+            {% endfor %}
+        </ul>
+{%endblock%}
